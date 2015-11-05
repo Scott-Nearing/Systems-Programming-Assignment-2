@@ -1,0 +1,20 @@
+  This is file prog2.README in the directory 
+
+          ~csi402/public/prog2
+
+You should also take a careful look at the following 
+additional files in this directory. 
+
+  (1) submission_info.txt: This file explains how you should use
+      the turnin-csi402 program to submit your source files
+      and makefile. It also contains the specifications
+      for your makefile.
+
+  (2) sample_test_info.txt: This file provides information
+      about the sample test cases for this program. (The test
+      cases themselves are files t1.txt, t1.bin, t2.txt and
+      t2.bin in the above directory.)
+
+Note: It is VERY IMPORTANT to test your program on itsunix.
+      (The reason is that binary files generated on one system 
+      may not be compatible with another system.)

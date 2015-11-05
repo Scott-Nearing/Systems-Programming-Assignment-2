@@ -1,0 +1,140 @@
+ls
+//Scott Nearing
+//sn379745
+
+//Description: This c source file is part of a program that converts text files to 
+//binary files, converts binary files to text files, and outputs some information
+//about the input file. Flags are used to determine which of these tasks is 
+//performed. This c source file contains three functions that correspond to the
+//above tasks. Each function in this file is called by the main function.
+
+//libraries 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+//headers
+#include "constants.h"
+#include "struct_def.h"
+#include "externs.h"
+#include "prototypes.h"
+
+
+//This function is called by the main method to scan a text file and write a binary
+//file. It returns an int and takes no parameters.
+
+int text(){
+  int x; //holds the return value of fscanf(); it's set to 0 when file is empty.
+  //  int waste; //holds int before it is cast to an unsigned int
+  unsigned int num; //holds the integer at the end of each line of the text file.
+  unsigned char len; //holds the length of the string of the cur line of the file
+  char str[STRLEN]; //holds string of current line of the text file.
+  x = DEFAULT; //set x to -2 initially before 1st line is scanned
+
+  while(x != 0){
+    // fflush(in); 
+    // fflush(out);   
+
+    if(x != DEFAULT){ //x equals one after a successful scan, but equals -1 initially 
+      fwrite((const void *) &len, sizeof(unsigned char), 1, out);
+      fwrite((const void *) str, sizeof(char), strlen(str), out);
+      // fflush(in);
+      // fflush(out);
+      fwrite((const void *) &num, sizeof(unsigned int), 1, out);
+    }
+    // fflush(in);
+    // fflush(out);
+     
+    
+    x =  fscanf(in, "%s%u", str, &num); //scan current line of text file for a string
+    //    x = fscanf(in, "%u", num); //scan current line of text for an unsigned int
+    num = (unsigned int) num;
+    len = (unsigned char) strlen(str);
+     x++;
+     x= x/ODDFIX;
+   
+  } //end while x != 0
+  return(0);
+} //end text()
+
+
+//This function is called by the main function to read a binary file and print a
+//text file. It returns and int an takes no parameters.(print means write to a 
+//file using fprintf() and doesn't mean to print on a piece of paper.)
+
+int binary(){
+  int x;
+  int y;
+  unsigned char len;
+  char str[STRLEN];
+  unsigned int num;
+  
+  x = DEFAULT;//x holds the return value of fread() and is used to determine when the
+             //file has been read completely
+
+  while(x != 0){
+  
+    if(x != DEFAULT){
+      fprintf(out, "%s\t",str);
+      fprintf(out, "%u\n",num);
+    }//end if x!=DEFAULT
+
+    x = fread((const void *)&len,sizeof(unsigned char), 1, in);
+    y = (const int) len;
+    x = fread((const void *) &str, sizeof(char), y, in);
+    x = fread((const void *) &num, sizeof(unsigned int), 1, in);
+
+    str[len] = '\0';   
+  }//end while x != 0
+  
+  
+  return 0;
+}//end binary();
+
+
+//This function is called by the main to read a binary file and output the following
+//to stdout: the length of the shortest string, the length of the longest string,
+//the integer with the greatest value, and the integer with the least value. This
+//function takes no parameters and returns an integer. 
+
+int stats(){
+  int x;
+  int y;
+  unsigned char len;
+  char str[STRLEN];
+  unsigned int num;
+
+  int strmax = 0;
+  int strmin = STRLEN;
+  unsigned int intmax = 0;
+  unsigned int intmin = BIG;
+
+  x = DEFAULT;
+  
+  while(x != 0){
+    
+    if(x != DEFAULT){//if not first iteration
+      //if statements to deterine max and min
+      
+      if(y > strmax) {strmax = y;}
+      if(y < strmin) {strmin = y;}
+      if(num > intmax){intmax = num;}
+      if(num < intmin){intmin = num;}
+      
+    }//end if 
+     fread((const void *)&len, sizeof(unsigned char), 1, in);//read unsigned char
+    y = (const int) len; //cast unsigned char as int
+     fread((const void *) str, sizeof(char), y, in);// read string
+  x = fread((const void *) &num, sizeof(unsigned int), 1, in);//read unsigned int
+    
+
+  }//end while x != 0
+
+  //output stats
+  printf("%s %d\n","The length of the shortest string is:", strmin);
+  printf("%s %d\n","The length of the longest string is: ",strmax);
+  printf("%s %u\n","The greatest number is: ",intmax);
+  printf("%s %u\n","The least number is: ", intmin);
+
+  return 0;  
+}//end of stats
